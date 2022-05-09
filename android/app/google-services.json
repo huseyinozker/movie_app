@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "58606316500",
+    "project_id": "bindizi-app",
+    "storage_bucket": "bindizi-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:58606316500:android:bb49c8f9b5371552cd0441",
+        "android_client_info": {
+          "package_name": "com.appatolian.bindizi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "58606316500-0113ju4g3627rgv1e4htqi2snl7fhiga.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.appatolian.bindizi",
+            "certificate_hash": "980bedcbc488d71d4899ee88a8ec390e06767506"
+          }
+        },
+        {
+          "client_id": "58606316500-2il3vi1mcnrap40hludvlbn25b9ob2ss.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAavERNXbTaSnkL6YQxJFRKnpMnMuHgJ-o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "58606316500-2il3vi1mcnrap40hludvlbn25b9ob2ss.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
