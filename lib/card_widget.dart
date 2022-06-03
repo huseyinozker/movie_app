@@ -61,6 +61,7 @@ class _CardWidgetState extends State<CardWidget> {
           context,
           MovieScreen.routeName,
           arguments: MovieArguments(
+            widget.movie.id,
             widget.movie.name,
             widget.movie.overview,
             widget.movie.backdrop_path,

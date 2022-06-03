@@ -7,6 +7,7 @@ import '../card_widget.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 Future<MovieList> fetchMovie() async {
   /* final response = await http.get(Uri.parse(
@@ -19,9 +20,10 @@ Future<MovieList> fetchMovie() async {
     // then parse the JSON.
     var received = jsonDecode(response.body);
     var receivedItems = received["items"];
-    print(receivedItems[0]);
+    print("yükleniyor");
     return MovieList.fromJson(received, receivedItems);
   } else {
+    print("yüklenmiyor");
     // If the server did not return a 200 OK response,
     // then throw an exception.
     throw Exception('Failed to load album');
@@ -36,6 +38,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final _firestore = FirebaseFirestore.instance;
   late Future<MovieList> futureMovieList;
 
   List<Movie> movieList = [];
@@ -44,10 +47,17 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     futureMovieList = fetchMovie();
+    print(futureMovieList);
+    print("asdsa");
   }
 
   @override
   Widget build(BuildContext context) {
+    CollectionReference colRef = _firestore.collection('denemeCollection');
+    print(colRef);
+    var babaRef = colRef.doc('baba');
+    print(babaRef);
+
     final firebaseUser = context.watch<User?>();
     return Scaffold(
       appBar: AppBar(
@@ -56,6 +66,16 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Center(
           child: Column(
         children: [
+          /* ElevatedButton(
+            child: Text("get data"),
+            onPressed: () async {
+              var response = await babaRef.get();
+              print(response);
+              dynamic map = response.data();
+              print(map);
+              print(map['isim']);
+            },
+          ), */
           FutureBuilder<MovieList>(
             future: futureMovieList,
             builder: (context, snapshot) {
@@ -77,10 +97,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 ));
               } else if (snapshot.hasError) {
                 return Text('${snapshot.error}');
+              } else {
+                return Text("yüklenmsedi");
               }
 
               // By default, show a loading spinner.
-              return Text("yüklenmedi"); //const CircularProgressIndicator();
+              //const CircularProgressIndicator();
             },
           ),
         ],

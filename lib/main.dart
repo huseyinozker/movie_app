@@ -14,9 +14,11 @@ import 'package:flutter/material.dart';
 import 'package:movie_app/authentication_service.dart';
 import 'package:movie_app/class/movie.dart';
 import 'package:movie_app/class/movieList.dart';
+import 'package:movie_app/screens/addSharingPage.dart';
 import 'package:movie_app/screens/homeScreen.dart';
 import 'package:movie_app/screens/loginScreen.dart';
 import 'package:movie_app/screens/movieScreen.dart';
+import 'package:movie_app/screens/profileScreen.dart';
 import 'card_widget.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_core/firebase_core.dart';
@@ -55,6 +57,8 @@ class _MyAppState extends State<MyApp> {
         home: AuthenticationWrapper(), //HomeScreen(),
         routes: {
           MovieScreen.routeName: (context) => MovieScreen(),
+          ProfileScreen.routeName: (context) => ProfileScreen(),
+          AddPage.routeName: (context) => AddPage()
         },
       ),
     );
