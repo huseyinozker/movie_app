@@ -5,10 +5,12 @@ import 'package:movie_app/class/movie.dart';
 import 'package:movie_app/class/movieArguments.dart';
 import 'package:movie_app/screens/movieScreen.dart';
 import 'package:movie_app/screens/profileScreen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CommentBox extends StatefulWidget {
   //const CommentBox({Key? key, this.description = "açıklama"}) : super(key: key);
-  const CommentBox();
+  final QueryDocumentSnapshot comment;
+  const CommentBox(this.comment);
   @override
   State<CommentBox> createState() => _CommentBoxState();
 }
@@ -24,17 +26,17 @@ class _CommentBoxState extends State<CommentBox> {
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             GestureDetector(
               child: Row(
-                children: const [
-                  CircleAvatar(
+                children: [
+                  const CircleAvatar(
                     backgroundColor: Colors.blue,
-                    child: const Text('H'),
+                    child: Text('H'),
                   ),
                   Text(
-                    "Hüseyin",
+                    widget.comment['user_name'],
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                   Text(
-                    "@hunter",
+                    "@${widget.comment['user_nick']}",
                     style: TextStyle(fontWeight: FontWeight.w300),
                   ),
                 ],
@@ -47,10 +49,10 @@ class _CommentBoxState extends State<CommentBox> {
               },
             ),
             Column(
-              children: const [
+              children: [
                 Text(
-                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-                  style: TextStyle(height: 1.5),
+                  widget.comment['comment'],
+                  style: const TextStyle(height: 1.5),
                 )
               ],
             )

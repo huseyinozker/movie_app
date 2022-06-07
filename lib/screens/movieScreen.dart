@@ -6,6 +6,7 @@ import 'package:movie_app/widgets/commentBox.dart';
 
 import '../class/movieArguments.dart';
 import '../class/movieArguments.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MovieScreen extends StatefulWidget {
   static const routeName = '/extractArguments';
@@ -18,6 +19,7 @@ class MovieScreen extends StatefulWidget {
 
 class _MovieScreenState extends State<MovieScreen>
     with SingleTickerProviderStateMixin {
+  final _firestore = FirebaseFirestore.instance;
   late TabController _controller;
   @override
   void initState() {
@@ -66,7 +68,7 @@ class _MovieScreenState extends State<MovieScreen>
 
   @override
   Widget build(BuildContext context) {
-    final List<String> tabs = <String>['Tab 1', 'Tab 2', 'Tab 3', 'Tab 4'];
+    final List<String> tabs = <String>['Comment', 'Quotes', 'Review'];
     MovieArguments args = MovieArguments(
       -1,
       "name",
@@ -95,189 +97,234 @@ class _MovieScreenState extends State<MovieScreen>
             child: const Icon(Icons.add),
           ),
           body: NestedScrollView(
-            headerSliverBuilder: (context, innerBoxIsScrolled) {
-              return <Widget>[
-                SliverOverlapAbsorber(
-                  handle:
-                      NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                  sliver: SliverSafeArea(
-                    top: false,
-                    sliver: SliverAppBar(
-                      pinned: true,
-                      title: Text(args.name),
+              headerSliverBuilder: (context, innerBoxIsScrolled) {
+                return <Widget>[
+                  SliverOverlapAbsorber(
+                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                        context),
+                    sliver: SliverSafeArea(
+                      top: false,
+                      bottom: false,
+                      sliver: SliverAppBar(
+                        pinned: true,
+                        title: Text(args.name),
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: ClipRRect(
+                      child: Image.network(
+                        'https://www.themoviedb.org/t/p/original$backdropPath',
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                args.name,
+                                style: const TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const Text(
+                                "2011 - devam ediyor..",
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Divider(
+                          thickness: 1.5,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              InfoItem(
+                                "220",
+                                "",
+                                const Icon(
+                                  Icons.favorite,
+                                  color: Colors.red,
+                                  size: 30,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 15,
+                              ),
+                              InfoItem(
+                                "587",
+                                "",
+                                const Icon(
+                                  Icons.play_arrow,
+                                  color: Colors.black87,
+                                  size: 30,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 15,
+                              ),
+                              InfoItem(
+                                "8.7",
+                                "2423",
+                                Icon(
+                                  Icons.star,
+                                  color: Colors.orange[700],
+                                  size: 30,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Divider(
+                          thickness: 1.5,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SliverAppBar(
+                    elevation: 0,
+                    automaticallyImplyLeading: false,
+                    pinned: true,
+                    backgroundColor: Colors.grey[50],
+                    flexibleSpace: const TabBar(
+                      indicatorColor: Colors.blue,
+                      labelColor: Colors.blue,
+                      tabs: [
+                        Tab(
+                          icon: Icon(Icons.home),
+                          text: "Genel",
+                        ),
+                        Tab(
+                          icon: Icon(Icons.comment),
+                          text: "Yorumlar",
+                        ),
+                        Tab(
+                          icon: Icon(Icons.abc),
+                          text: "İncelemeler",
+                        ),
+                        Tab(
+                          icon: Icon(Icons.comment),
+                          text: "Yorumlar",
+                        ),
+                      ],
+                    ),
+                  ),
+                ];
+              },
+              body: Padding(
+                padding: EdgeInsets.all(0),
+              ) /* TabBarView(children: [
+              Expanded(
+                child: Container(
+                  color: Colors.blueGrey[50],
+                  child: Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      args.description,
+                      style: TextStyle(fontSize: 16),
                     ),
                   ),
                 ),
-                SliverToBoxAdapter(
-                  child: ClipRRect(
-                    child: Image.network(
-                      'https://www.themoviedb.org/t/p/original$backdropPath',
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              args.name,
-                              style: const TextStyle(
-                                color: Colors.black87,
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const Text(
-                              "2011 - devam ediyor..",
-                              style: TextStyle(
-                                color: Colors.black54,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Divider(
-                        thickness: 1.5,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            InfoItem(
-                              "220",
-                              "",
-                              const Icon(
-                                Icons.favorite,
-                                color: Colors.red,
-                                size: 30,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 15,
-                            ),
-                            InfoItem(
-                              "587",
-                              "",
-                              const Icon(
-                                Icons.play_arrow,
-                                color: Colors.black87,
-                                size: 30,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 15,
-                            ),
-                            InfoItem(
-                              "8.7",
-                              "2423",
-                              Icon(
-                                Icons.star,
-                                color: Colors.orange[700],
-                                size: 30,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Divider(
-                        thickness: 1.5,
-                      ),
-                    ],
-                  ),
-                ),
-                SliverAppBar(
-                  elevation: 0,
-                  automaticallyImplyLeading: false,
-                  pinned: true,
-                  backgroundColor: Colors.grey[50],
-                  flexibleSpace: const TabBar(
-                    indicatorColor: Colors.blue,
-                    labelColor: Colors.blue,
-                    tabs: [
-                      Tab(
-                        icon: Icon(Icons.home),
-                        text: "Genel",
-                      ),
-                      Tab(
-                        icon: Icon(Icons.comment),
-                        text: "Yorumlar",
-                      ),
-                      Tab(
-                        icon: Icon(Icons.abc),
-                        text: "İncelemeler",
-                      ),
-                      Tab(
-                        icon: Icon(Icons.comment),
-                        text: "Yorumlar",
-                      ),
-                    ],
-                  ),
-                ),
-              ];
-            },
-            body: TabBarView(
-              // These are the contents of the tab views, below the tabs.
-              children: tabs.map((String name) {
+              ),
+              ...tabs.map((String name) {
                 return SafeArea(
                   top: false,
                   bottom: false,
                   child: Builder(
-                    // This Builder is needed to provide a BuildContext that is
-                    // "inside" the NestedScrollView, so that
-                    // sliverOverlapAbsorberHandleFor() can find the
-                    // NestedScrollView.
-                    builder: (BuildContext context) {
-                      return CustomScrollView(
-                        // The "controller" and "primary" members should be left
-                        // unset, so that the NestedScrollView can control this
-                        // inner scroll view.
-                        // If the "controller" property is set, then this scroll
-                        // view will not be associated with the NestedScrollView.
-                        // The PageStorageKey should be unique to this ScrollView;
-                        // it allows the list to remember its scroll position when
-                        // the tab view is not on the screen.
+                    builder: (BuildContext context1) {
+                      return StreamBuilder(
+                        stream: _firestore
+                            .collection(name)
+                            .where('movie_id', isEqualTo: args.id)
+                            .snapshots(),
+                        builder:
+                            (BuildContext context, AsyncSnapshot snapshot) {
+                          if (snapshot.data != null) {
+                            return CustomScrollView(
+                              key: PageStorageKey<String>(name),
+                              slivers: [
+                                SliverOverlapInjector(
+                                  handle: NestedScrollView
+                                      .sliverOverlapAbsorberHandleFor(context1),
+                                ),
+                                SliverList(
+                                  delegate: SliverChildBuilderDelegate(
+                                    (BuildContext context, int index) {
+                                      return Card(
+                                          margin: const EdgeInsets.fromLTRB(
+                                              0, 10, 0, 10),
+                                          child: CommentBox(snapshot
+                                              .data.docs[index]) //CommentBox(),
+                                          );
+                                    },
+                                    childCount: snapshot
+                                        .data.docs.length, // 1000 list items
+                                  ),
+                                ),
+                              ],
+                            );
+                          } else {
+                            return Text("data");
+                          }
+                        },
+                      );
+                      /* return CustomScrollView(
                         key: PageStorageKey<String>(name),
-
                         slivers: <Widget>[
                           SliverOverlapInjector(
-                            // This is the flip side of the SliverOverlapAbsorber
-                            // above.
                             handle:
                                 NestedScrollView.sliverOverlapAbsorberHandleFor(
                                     context),
                           ),
-                          SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (BuildContext context, int index) {
-                                return const Card(
-                                  margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                  child: CommentBox(),
-                                );
-                              },
-                              childCount: 10, // 1000 list items
-                            ),
-                          ),
+                          StreamBuilder(
+                            stream: _firestore
+                                .collection("Comment")
+                                .where('movie_id', isEqualTo: args.id)
+                                .snapshots(),
+                            builder:
+                                (BuildContext context, AsyncSnapshot snapshot) {
+                              return SliverList(
+                                delegate: SliverChildBuilderDelegate(
+                                  (BuildContext context, int index) {
+                                    return const Card(
+                                      margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                      child: CommentBox(),
+                                    );
+                                  },
+                                  childCount: snapshot
+                                      .data.docs.length, // 1000 list items
+                                ),
+                              );
+                            },
+                          )
                         ],
-                      );
+                      ); */
                     },
                   ),
                 );
               }).toList(),
-            ),
-          ),
+            ]), */
+              ),
         ));
   }
 }

@@ -5,25 +5,64 @@ class CommentService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<Comment> addComment(
+    String choose,
     String user_id,
+    String user_name,
+    String user_nick,
     int movie_id,
     String comment,
     int like_count,
   ) async {
-    var _ref = _firestore.collection("Comment");
+    if (choose == "Yorum") {
+      var _comRef = _firestore.collection("Comment");
 
-    like_count = 0;
+      like_count = 0;
 
-    var documentRef = await _ref.add({
-      "user_id": user_id,
-      "comment": comment,
-      "movie_id": movie_id,
-      "like_count": like_count
-    });
+      var documentRef = await _comRef.add({
+        "user_id": user_id,
+        "user_name": user_name,
+        "user_nick": user_nick,
+        "comment": comment,
+        "movie_id": movie_id,
+        "like_count": like_count
+      });
 
+      return Comment(
+          id: documentRef.id,
+          user_id: user_id,
+          user_name: user_name,
+          user_nick: user_nick,
+          movie_id: movie_id,
+          comment: comment,
+          like_count: like_count);
+    } else if (choose == "Alıntı") {
+      var _qRef = _firestore.collection("Quotes");
+
+      like_count = 0;
+
+      var documentRef = await _qRef.add({
+        "user_id": user_id,
+        "user_name": user_name,
+        "user_nick": user_nick,
+        "comment": comment,
+        "movie_id": movie_id,
+        "like_count": like_count
+      });
+
+      return Comment(
+          id: documentRef.id,
+          user_id: user_id,
+          user_name: user_name,
+          user_nick: user_nick,
+          movie_id: movie_id,
+          comment: comment,
+          like_count: like_count);
+    }
     return Comment(
-        id: documentRef.id,
+        id: "s",
         user_id: user_id,
+        user_name: user_name,
+        user_nick: user_nick,
         movie_id: movie_id,
         comment: comment,
         like_count: like_count);

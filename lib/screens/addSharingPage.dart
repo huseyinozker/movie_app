@@ -29,6 +29,9 @@ class _AddPageState extends State<AddPage> {
   ];
   @override
   Widget build(BuildContext context) {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    CollectionReference colRef = _firestore.collection('UsersCollection');
+    var userRef = colRef.doc("${auth.currentUser?.uid}");
     MovieArguments args = MovieArguments(
       -1,
       "name",
@@ -40,7 +43,6 @@ class _AddPageState extends State<AddPage> {
       args = ModalRoute.of(context)?.settings.arguments as MovieArguments;
     }
 
-    final FirebaseAuth auth = FirebaseAuth.instance;
     var size = MediaQuery.of(context).size;
     return Scaffold(
         appBar: AppBar(
@@ -117,16 +119,52 @@ class _AddPageState extends State<AddPage> {
               padding: const EdgeInsets.only(left: 8.0, right: 8, bottom: 25),
               child: InkWell(
                 onTap: () async {
-                  CollectionReference colRef =
-                      _firestore.collection('UsersCollection');
+                  if (statusController.text != "") {
+                    var userResponse = await userRef.get();
+                    dynamic userMap = userResponse.data();
 
-                  var userRef = colRef.doc('${auth.currentUser?.uid}');
-                  var response = await userRef.get();
-                  dynamic map = response.data();
-                  /* print(auth.currentUser?.uid); */
-
-                  _commentService.addComment("${auth.currentUser?.uid}",
-                      args.id, statusController.text, 0);
+                    _commentService
+                        .addComment(
+                            dropdownvalue,
+                            "${auth.currentUser?.uid}",
+                            userMap["name"],
+                            userMap["nickname"],
+                            args.id,
+                            statusController.text,
+                            0)
+                        .then((value) => showDialog(
+                              context: context,
+                              builder: (ctx) => AlertDialog(
+                                title: Icon(Icons.bookmark_added_rounded),
+                                content: Text("Başarıyla Eklendi"),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(ctx);
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text("Tamam"),
+                                  ),
+                                ],
+                              ),
+                            ));
+                  } else {
+                    return showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        title: Icon(Icons.warning),
+                        content: Text("Lütfen bir şeyler yazın"),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(ctx);
+                            },
+                            child: const Text("Tamam"),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
                 },
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 5),
